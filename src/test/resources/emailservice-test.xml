@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:context="http://www.springframework.org/schema/context"
+   xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans       
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+   <!-- the application context definition for DispatcherServlet -->
+   <bean id="emailService"
+      class="com.jcodeshare.webtemplate.service.email.EmailServiceImpl" />
+
+   <bean id="configProp"
+      class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+      <property name="locations">
+         <list>
+            <value>classpath*:test.properties</value>
+         </list>
+      </property>
+   </bean>
+
+</beans>
+
+<!-- # Copyright by YP Leung, 2015 Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php -->
