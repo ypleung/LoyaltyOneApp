@@ -127,7 +127,6 @@ function addCommentDiv(node, data) {
 
 function convertSerialFormToJson(serialForm) {
    var obj = {};
-
    $.each(serialForm, function() {
       if (obj[this.name] !== undefined) {
          if (!obj[this.name].push) {
@@ -212,15 +211,9 @@ function isSafeChar(str) {
    return "0";
 }
 
+
 window.onunload = function(){
    $("#loadCommentsTab").val("0"); 
-}
-window.unload = function(){
-   initGeoLocation();
-}
-var geocoder;
-function initGeoLocation () {
-   geocoder = new google.maps.Geocoder();
 }
 
 function runGeoLocation () {
@@ -238,7 +231,7 @@ function geoSuccess (position) {
    $('#latitude').html(lat);
    $('#longitude').html(long); 
    
-   //var city = getCity(lat, long);
+   var city = getCity(lat, long);
    //alert ("geo city: " + city);
 
 }
@@ -248,40 +241,43 @@ function geoError() {
 }
 
 function getCity (lat, long) {
-   var map = new google.maps.LatLng(lat, long);
-   
-   geocoder.geocode({'latLng': map}, function(results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-         console.log(results)
-          if (results[1]) {
-             // formatted address
-             alert(results[0].formatted_address)
-             // find country name
-             for (var i=0; i<results[0].address_components.length; i++) {
-                for (var b=0;b<results[0].address_components[i].types.length;b++) {
-   
-                   // there are different types that might hold a city
-                     // admin_area_lvl_1 usually does in come cases looking for
-                     // sublocality type will be more appropriate
-                   if (results[0].address_components[i].types[b] == "administrative_area_level_1") {
-                      // this is the object you are looking for
-                      city= results[0].address_components[i];
-                      break;
-                   }
-                }
-             }
-             // city data
-             alert(city.short_name + " " + city.long_name)
-             return city.long_name;
-          } else {
-             alert("No results found");
-          }
-      } else {
-         alert("Geocoder failed due to: " + status);
-      }
-      return (status);
-   });
+   var url = "http://maps.googleapis.com/maps/api/geocode/json?latlng="
+      +lat+","+long+"&sensor=false";
+   $.get(url).success(function(data) {
+      var loc1 = data.results[0];
+      var county, city;
+        $.each(loc1, function(k1,v1) {
+           if (k1 == "address_components") {
+              //alert("length: " + v1.length);
+              for (var i = 0; i < v1.length; i++) {
+                 for (k2 in v1[i]) {
+                    if (k2 == "types") {
+                       var types = v1[i][k2];
+                       //alert ("types: " + types[0]);
+                       if (types[0] =="sublocality_level_1") {
+                           county = v1[i].long_name;
+                           //alert ("county: " + county);
+                       } 
+                       if (types[0] =="locality") {
+                          city = v1[i].long_name;
+                          //alert ("city: " + city);
+                      } 
+                    }
+              
+                 }          
+
+              }
+
+           }
+            
+        });
+        $('#city').html(city); 
+   }); 
+
 }
+
+
+
 
 /*
  * ! # Copyright by YP Leung, 2015 Licensed under the MIT license:

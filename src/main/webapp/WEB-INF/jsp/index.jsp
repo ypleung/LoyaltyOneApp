@@ -18,9 +18,6 @@
    src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script
    src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script
-   src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
-
 <style>
 /* Add a gray background color and some padding to the footer */
 footer {
@@ -112,7 +109,7 @@ footer {
 <div class="container">
    <div id="commentsTable" class="row">
       <div class="col-sm-9">
-      <p><b>LATITUDE: </b><span id="latitude"></span> <b>LONGITUDE: </b><span id="longitude"></span></p>
+      <p><b>CITY: </b><span id="city"></span> <b>LATITUDE: </b><span id="latitude"></span> <b>LONGITUDE: </b><span id="longitude"></span></p>
       </div>
       </div></div>
    </div>
