@@ -237,10 +237,10 @@ function geoSuccess (position) {
    var long = userPos.coords.longitude; 
    $('#latitude').html(lat);
    $('#longitude').html(long); 
-/*   
-   var city = getCity(lat, long);
-   alert ("geo city: " + city);
-*/
+   
+   //var city = getCity(lat, long);
+   //alert ("geo city: " + city);
+
 }
 
 function geoError() {
