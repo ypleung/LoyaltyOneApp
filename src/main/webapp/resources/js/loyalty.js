@@ -265,9 +265,9 @@ function getCity (lat, long) {
                     }
               
                  }          
-
+   
               }
-
+   
            }
             
         });
