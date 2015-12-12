@@ -8,37 +8,30 @@
 <c:url var="base" value="/" scope="request" />
 <spring:url value="/resources/css/bootstrap-cyborg.css"
    var="bsCyborgCss" />
-   
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
    href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-<link href="${bsCyborgCss}" rel="stylesheet" />   
+<link href="${bsCyborgCss}" rel="stylesheet" />
 <script
    src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script
    src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script
+   src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
 <style>
 /* Add a gray background color and some padding to the footer */
 footer {
 	background-color: #f2f2f2;
 	padding: 25px;
 }
-
-.carousel-inner img {
-	width: 100%; /* Set width to 100% */
-	min-height: 200px;
-}
-
-/* Hide the carousel text when the screen is less than 600 pixels wide */
-@media ( max-width : 600px) {
-	.carousel-caption {
-		display: none;
-	}
-}
 </style>
 </head>
 <body>
+   
+   <input type="hidden" id="loadCommentsTab" value="0"></input>
 
    <nav class="navbar navbar-inverse">
       <div class="container-fluid">
@@ -52,164 +45,76 @@ footer {
          </div>
          <div class="collapse navbar-collapse" id="topNavbar">
             <ul class="nav navbar-nav">
-               <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
-               <li><a data-toggle="tab" href="#about">About</a></li>
-               <li><a data-toggle="tab" href="#projects">Projects</a></li>
-               <li><a data-toggle="tab" href="#contact">Contact</a></li>
+               <li class="active"><a data-toggle="tab"
+                  href="#comments">Home</a></li>
                <li class="hidden"><a data-toggle="tab" href="#main">main</a></li>
+
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-               <li><a href="#"><span
-                     class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            <div id="userService">
+            <ul  class="nav navbar-nav navbar-right">
+               <li class="dropdown" id="menuRegister"><a
+                  class="dropdown-toggle" href="#register"
+                  data-toggle="dropdown" id="navLogin">Register</a>
+                  <div class="dropdown-menu" style="padding:17px;">
+                     <form class="form" id="formRegister">
+                        <div class="form-group">
+                           <input name="rusername" id="regUsername" required
+                              placeholder="Username" type="text">
+                        </div>
+                        <div class="form-group">
+                           <input type="password" class="form-control"
+                              id="regPassword" required 
+                              name="rpassword"
+                              placeholder="Password">
+                        </div>
+                        <div class="form-group">
+                           <input type="password" class="form-control"
+                              id="regPasswordChk" required
+                              name="rpasswordchk"
+                              placeholder="Verify Password">
+                        </div>
+                        <br />
+                        <button type="submit" id="btnLogin" class="btn">Login</button>
+                     </form>
+                  </div></li>
+               <li class="dropdown" id="menuLogin"><a
+                  class="dropdown-toggle" href="#login"
+                  data-toggle="dropdown" id="navLogin">Login</a>
+                  <div class="dropdown-menu" style="padding:17px;">
+                     <form class="form" id="formLogin">
+                        <div class="form-group">
+                           <input name="username" id="username" required
+                              placeholder="Username" type="text">
+                        </div>
+                        <div class="form-group">
+                           <input name="password" id="password" required
+                              placeholder="Password" type="password">
+                        </div>
+                        <br />
+                        <button type="submit" id="btnLogin" class="btn">Login</button>
+                     </form>
+                  </div></li>
+            </ul>
+            </div>
+            <ul class="nav navbar-right">
+               <li id="userDisplay"></li>
             </ul>
          </div>
       </div>
    </nav>
-
+   <div id="ErrorDiv"><p class="bg-danger" id="ErrorText"></p></div>
    <div class="tab-content">
-
-      <div id="home" class="tab-pane fade in active">
-
-         <div class="container">
-            <div class="row">
-               <div class="col-sm-8">
-                  <div id="myCarousel" class="carousel slide"
-                     data-ride="carousel">
-                     <!-- Indicators -->
-                     <ol class="carousel-indicators">
-                        <li data-target="#myCarousel" data-slide-to="0"
-                           class="active"></li>
-                        <li data-target="#myCarousel" data-slide-to="1"></li>
-                     </ol>
-
-                     <!-- Wrapper for slides -->
-                     <div class="carousel-inner" role="listbox">
-                        <div class="item active">
-                           <img
-                              src="http://placehold.it/800x400?text=IMAGE"
-                              alt="Image">
-                           <div class="carousel-caption">
-                              <h3>Sell $</h3>
-                              <p>Money Money.</p>
-                           </div>
-                        </div>
-
-                        <div class="item">
-                           <img
-                              src="http://placehold.it/800x400?text=Another Image Maybe"
-                              alt="Image">
-                           <div class="carousel-caption">
-                              <h3>More Sell $</h3>
-                              <p>Lorem ipsum...</p>
-                           </div>
-                        </div>
-                     </div>
-
-                     <!-- Left and right controls -->
-                     <a class="left carousel-control" href="#myCarousel"
-                        role="button" data-slide="prev"> <span
-                        class="glyphicon glyphicon-chevron-left"
-                        aria-hidden="true"></span> <span class="sr-only">Previous</span>
-                     </a> <a class="right carousel-control"
-                        href="#myCarousel" role="button"
-                        data-slide="next"> <span
-                        class="glyphicon glyphicon-chevron-right"
-                        aria-hidden="true"></span> <span class="sr-only">Next</span>
-                     </a>
-                  </div>
-               </div>
-               <div class="col-sm-4">
-                  <div class="well">
-                     <p>Some text..</p>
-                  </div>
-                  <div class="well">
-                     <p>Upcoming Events..</p>
-                  </div>
-                  <div class="well">
-                     <p>Visit Our Blog</p>
-                  </div>
-               </div>
-            </div>
-            <hr>
-         </div>
-
-         <div class="container text-center">
-
-            <h3>What We Do</h3>
-            <br>
-            <div class="row">
-               <div class="col-sm-3">
-                  <img src="http://placehold.it/150x80?text=IMAGE"
-                     class="img-responsive" style="width: 100%"
-                     alt="Image">
-                  <p>Current Project</p>
-               </div>
-               <div class="col-sm-3">
-                  <img src="http://placehold.it/150x80?text=IMAGE"
-                     class="img-responsive" style="width: 100%"
-                     alt="Image">
-                  <p>Project 2</p>
-               </div>
-               <div class="col-sm-3">
-                  <div class="well">
-                     <p>Some text..</p>
-                  </div>
-                  <div class="well">
-                     <p>Some text..</p>
-                  </div>
-               </div>
-               <div class="col-sm-3">
-                  <div class="well">
-                     <p>Some text..</p>
-                  </div>
-                  <div class="well">
-                     <p>Some text..</p>
-                  </div>
-               </div>
-            </div>
-            <hr>
-         </div>
-
-      </div>
-
-      <div id="main" class="tab-pane fade"></div>
-
+      <div id="home" class="tab-pane fade"></div>
+      <div id="main" class="tab-pane fade in active"></div>
    </div>
-   <div class="container text-center">
-      <h3>Our Partners</h3>
-      <br>
-      <div class="row">
-         <div class="col-sm-1">
-            <img src="http://placehold.it/150x80?text=IMAGE"
-               class="img-responsive" style="width: 100%" alt="Image">
-            <p>Partner 1</p>
-         </div>
-         <div class="col-sm-1">
-            <img src="http://placehold.it/150x80?text=IMAGE"
-               class="img-responsive" style="width: 100%" alt="Image">
-            <p>Partner 2</p>
-         </div>
-         <div class="col-sm-1">
-            <img src="http://placehold.it/150x80?text=IMAGE"
-               class="img-responsive" style="width: 100%" alt="Image">
-            <p>Partner 3</p>
-         </div>
-         <div class="col-sm-1">
-            <img src="http://placehold.it/150x80?text=IMAGE"
-               class="img-responsive" style="width: 100%" alt="Image">
-            <p>Partner 4</p>
-         </div>
-         <div class="col-sm-1">
-            <img src="http://placehold.it/150x80?text=IMAGE"
-               class="img-responsive" style="width: 100%" alt="Image">
-            <p>Partner 5</p>
-         </div>
-         <div class="col-sm-1">
-            <img src="http://placehold.it/150x80?text=IMAGE"
-               class="img-responsive" style="width: 100%" alt="Image">
-            <p>Partner</p>
-         </div>
+   <br/>
+   <div id="location">
+<div class="container">
+   <div id="commentsTable" class="row">
+      <div class="col-sm-9">
+      <p><b>LATITUDE: </b><span id="latitude"></span> <b>LONGITUDE: </b><span id="longitude"></span></p>
       </div>
+      </div></div>
    </div>
 
    <br>
@@ -218,23 +123,19 @@ footer {
       <div class="container-fluid">
          <div class="navbar-collapse collapse" id="footer-body">
             <ul class="nav navbar-nav">
-               <li><a href="#">Browse Our Library</a></li>
-               <li><a href="#">About Us</a></li>
-               <li><a href="#">Contact Us</a></li>
-               <li><a href="#">Our Partners</a></li>
-               <li><a href="#">User Review</a></li>
-               <li><a href="#">Terms &amp; Conditions</a></li>
-               <li><a href="#">Privacy Policy</a></li>
+               <li><a href="#">Fun With Java</a></li>
             </ul>
          </div>
       </div>
    </nav>
 
    <spring:url value="/resources/js/menu.js" var="menujs" />
+   <spring:url value="/resources/js/loyalty.js" var="loyaltyjs" />
    <script>
 				var baseurl = "${base}";
 			</script>
    <script src="${menujs}"></script>
+   <script src="${loyaltyjs}"></script>
 
 
 </body>

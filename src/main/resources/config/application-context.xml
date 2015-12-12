@@ -9,13 +9,10 @@
    http://www.springframework.org/schema/context 
    http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
+
    <context:annotation-config />
-
-   <context:component-scan base-package="com.jcodeshare.webtemplate.data" />
-   <context:component-scan base-package="com.jcodeshare.webtemplate.data.service" />
-   <context:component-scan base-package="com.jcodeshare.webtemplate.service" />
-
    <context:property-placeholder location="classpath:application.properties" />
+
    <tx:annotation-driven transaction-manager="transactionManager" />
 
    <bean id="dataSource"
@@ -26,7 +23,6 @@
       <property name="password" value="${jdbc.password}" />
    </bean>
 
-   <!-- Hibernate session factory -->
    <bean id="sessionFactory"
       class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
       <property name="dataSource" ref="dataSource" />
@@ -52,17 +48,13 @@
    <bean
       class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
 
+<!--    <import resource="./hibernate.xml" /> -->
+<!--    <context:component-scan base-package="com.jcodeshare.webtemplate.data.dao" /> -->
+<!--    <context:component-scan base-package="com.jcodeshare.webtemplate.service" /> -->
+<!--    <context:component-scan base-package="com.jcodeshare.webtemplate.data.service" /> -->
 
    <!-- the application context definition for DispatcherServlet -->
-   <!-- <bean id="usersController" class="com.jcodeshare.webtemplate.service.UsersController" 
-      /> -->
-   <bean id="actionController" class="com.jcodeshare.webtemplate.service.ActionController">
-   </bean>
-
-   <bean id="commentsController" class="com.jcodeshare.webtemplate.service.CommentsController">
-      <property name="commentsService" ref="commentsService"></property>
-   </bean>
-
+<!--    <bean id="actionController" class="com.jcodeshare.webtemplate.service.ActionController" />
    <bean id="usersService"
       class="com.jcodeshare.webtemplate.data.service.UsersServiceImpl">
       <property name="dao" ref="usersDao" />
@@ -77,8 +69,6 @@
    </bean>
    <bean id="commentsDao" class="com.jcodeshare.webtemplate.data.dao.CommentsDaoImpl">
       <property name="sessionFactory" ref="sessionFactory" />
-   </bean>
+   </bean> -->
 
 </beans>
-
-<!-- # Copyright by YP Leung, 2015 Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php -->

@@ -3,6 +3,7 @@ package com.jcodeshare.webtemplate.config;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import com.jcodeshare.webtemplate.config.SpringConfig;
+//import com.jcodeshare.webtemplate.config.HibernateConfig;
 
 public class ServletInitializer extends
         AbstractAnnotationConfigDispatcherServletInitializer {
