@@ -241,7 +241,7 @@ function geoError() {
 }
 
 function getCity (lat, long) {
-   var url = "http://maps.googleapis.com/maps/api/geocode/json?latlng="
+   var url = "https://maps.googleapis.com/maps/api/geocode/json?latlng="
       +lat+","+long+"&sensor=false";
    $.get(url).success(function(data) {
       var loc1 = data.results[0];
