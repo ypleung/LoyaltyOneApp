@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jcodeshare.webtemplate.data.model.Comments;
 import com.jcodeshare.webtemplate.data.model.Users;
 
 @Repository("usersDao")
@@ -61,4 +62,9 @@ public class UsersDaoImpl extends AbstractDao implements UsersDao {
         return sessionFactory.getCurrentSession();
     }
 
+    public List<Comments> findAllComments(Users user) {
+        Criteria criteria = getSession().createCriteria(Comments.class);
+        criteria.add(Restrictions.eq("user", user));
+        return (List<Comments>) criteria.list();
+    }
 }

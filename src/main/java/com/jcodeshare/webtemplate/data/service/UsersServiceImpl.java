@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jcodeshare.webtemplate.data.dao.CommentsDao;
 import com.jcodeshare.webtemplate.data.dao.UsersDao;
+import com.jcodeshare.webtemplate.data.model.Comments;
 import com.jcodeshare.webtemplate.data.model.Users;
 
 @Service("usersService")
@@ -47,4 +48,7 @@ public class UsersServiceImpl implements UsersService {
         this.dao = dao;
     }
 
+    public List<Comments> findAllComments(Users user) {
+        return dao.findAllComments(user);
+    }
 }

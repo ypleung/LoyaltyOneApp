@@ -35,7 +35,9 @@ public class HibernateConfig {
    public LocalSessionFactoryBean sessionFactory() {
       LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
       sessionFactory.setDataSource(this.dataSource());
-      sessionFactory.setPackagesToScan(new String[] { "com.jcodeshare.webtemplate.data.model", "com.jcodeshare.webtemplate.data.dao" });
+      sessionFactory.setPackagesToScan(new String[] { 
+              "com.jcodeshare.webtemplate.data.model", 
+              "com.jcodeshare.webtemplate.data.dao" });
       sessionFactory.setHibernateProperties(hibernateProperties());
  
       return sessionFactory;

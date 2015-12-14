@@ -32,6 +32,9 @@ public class CommentsController {
     @Autowired
     CommentsService commentsService;
     
+    @Autowired
+    UsersService usersService;
+    
     @RequestMapping(value = "/addComment", method = RequestMethod.POST)
     public FormActionResult addComment(@RequestBody FormData form, @CookieValue(value = "userCookie", defaultValue = Users.DEFAULT_USERNAME) String userCookie, HttpServletResponse response) {
         
@@ -41,9 +44,13 @@ public class CommentsController {
         comments.setCreateDate(new Date());
         comments.setCreateTs(new Date());
         comments.setComment(form.getComment());
-        comments.setUserId(Users.DEFAULT_USER_ID);
+        comments.setUser(usersService.findById(Users.DEFAULT_USER_ID));
+        try {
         String parentId = form.getParentId();
         if( parentId != null && !parentId.isEmpty()) { comments.setParentId(Integer.parseInt(parentId));  };
+        } catch (Exception e) {
+            logger.info("Did we throw exception here?");
+        }
         
         logger.info("Calling AddComment Autowire work: " + commentsService);
         logger.info("Calling AddComment Action: created a comment entity: " + comments);
@@ -64,12 +71,14 @@ public class CommentsController {
         if ((user==null) || (user.length() == 0)) {
             user = Users.DEFAULT_USERNAME;
         }
-        
         return result;
-
     }
     
     public void setCommentsService(CommentsService commentsService) {
+        commentsService = commentsService;
+    }
+    
+    public void setUsersService(CommentsService commentsService) {
         commentsService = commentsService;
     }
 }

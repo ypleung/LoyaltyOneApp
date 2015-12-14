@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jcodeshare.webtemplate.data.model.Comments;
+import com.jcodeshare.webtemplate.data.model.Users;
 import com.jcodeshare.webtemplate.data.dao.AbstractDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -42,12 +43,6 @@ public class CommentsDaoImpl extends AbstractDao implements CommentsDao {
         Criteria criteria = getSession().createCriteria(Comments.class);
         criteria.add(Restrictions.eq("id", id));
         return (Comments) criteria.uniqueResult();
-    }
-    
-    public List<Comments> findByUserId(int userId) {
-        Criteria criteria = getSession().createCriteria(Comments.class);
-        criteria.add(Restrictions.eq("user_id", userId));
-        return (List<Comments>) criteria.list();
     }
     
     public void updateComments(Comments Comments) {

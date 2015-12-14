@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.jcodeshare.webtemplate.data.dao.CommentsDao;
 import com.jcodeshare.webtemplate.data.model.Comments;
+import com.jcodeshare.webtemplate.data.model.Users;
 
 @Service("commentsService")
 public class CommentsServiceImpl implements CommentsService {
@@ -34,9 +35,6 @@ public class CommentsServiceImpl implements CommentsService {
         return dao.findById(id);
     }
 
-    public List<Comments> findByUserId(int userId) {
-        return dao.findByUserId(userId);
-    }
     
     public void updateComments(Comments comments){
         dao.updateComments(comments);

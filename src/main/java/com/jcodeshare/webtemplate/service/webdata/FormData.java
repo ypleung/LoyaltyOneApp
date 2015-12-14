@@ -1,5 +1,8 @@
 package com.jcodeshare.webtemplate.service.webdata;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_DEFAULT)
 public class FormData {
     String comment;
     String username;

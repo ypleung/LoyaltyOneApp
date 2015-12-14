@@ -1,12 +1,14 @@
 package com.jcodeshare.webtemplate.service;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import com.jcodeshare.webtemplate.data.model.Comments;
 import com.jcodeshare.webtemplate.data.model.Users;
+import com.jcodeshare.webtemplate.data.service.CommentsService;
 import com.jcodeshare.webtemplate.data.service.UsersService;
 import com.jcodeshare.webtemplate.service.webdata.FormData;
 import com.jcodeshare.webtemplate.service.webdata.FormActionResult;
@@ -31,6 +33,9 @@ public class UsersController {
     // and declaring a bean
     @Autowired
     UsersService userService;
+    
+    @Autowired
+    CommentsService commentService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public FormActionResult userLogin(
@@ -61,33 +66,26 @@ public class UsersController {
 
     }
     
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @RequestMapping(value = "/getUserComments", method = RequestMethod.POST)
     public FormActionResult userRegister(
             @RequestBody FormData form,
             @CookieValue(value = "userCookie", defaultValue = Users.DEFAULT_USERNAME) String userCookie,
             HttpServletResponse response) {
 
-        Users user = new Users();
-        user.setPassword(form.getPassword());
-        user.setUsername(form.getUsername());
-        userService.saveUsers(user);
-
-        String loginMsg = "Failed to create user.";
-        String code = "301";
+        Users user = userService.findByUsername(form.getUsername());
+        List comments = userService.findAllComments(user);
+        
         logger.info("User: " + user);
         logger.info("Form: " + form);
+        String code = "200";
         
-        if ((user != null) && (user.getId() > 0)) {
-                response.addCookie(new Cookie("userCookie", user.getUsername()));
-                loginMsg = "User "+ user.getUsername() + " was successfuly created.";
-                code = "200";
-        }
-
         FormActionResult result = new FormActionResult();
         result.setCode(code);
-        result.setMsg(loginMsg);
+        //result.setUserComments(comments);
         result.setFormData(form);
         return result;
 
     }
+
+    
 }

@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import com.jcodeshare.webtemplate.data.model.Comments;
+import com.jcodeshare.webtemplate.data.model.Users;
 
 public interface CommentsDao {
     
@@ -16,13 +17,11 @@ public interface CommentsDao {
     void deleteCommentsById(int id);
      
     Comments findById(int id);
-    
-    List<Comments> findByUserId(int id);
      
     void updateComments(Comments comments);
     
+    Session getSession() ;
+    
     void setSessionFactory(SessionFactory sessionFactory) ;
     
-    Session getSession() ;
-
 }

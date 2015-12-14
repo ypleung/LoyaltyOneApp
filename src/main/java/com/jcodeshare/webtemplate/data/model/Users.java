@@ -4,14 +4,34 @@
  */
 package com.jcodeshare.webtemplate.data.model;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+
 import static javax.persistence.GenerationType.IDENTITY;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumns;
+import javax.persistence.JoinColumn;
 import javax.persistence.UniqueConstraint;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.ElementCollection;
+
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Cascade;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.jcodeshare.webtemplate.data.model.Comments;
 
 @Entity
 @Table(name = "users")
@@ -25,12 +45,14 @@ public class Users {
     public final static int DEFAULT_USER_ID = ANONYMOUS_USER_ID;
     public final static String ANONYMOUS_USERNAME = "ANONYMOUS";
     public final static String DEFAULT_USERNAME = ANONYMOUS_USERNAME;
+    public final static List<Comments> DEFAULT_EMPTY_LIST = new ArrayList<Comments>(0);
 
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
+    @Access(AccessType.PROPERTY)
     @Id @GeneratedValue
-    @Column(name = "id", nullable=false)
+    @Column(name = "id", unique=true, nullable=false)
     private Integer id;
 
     //----------------------------------------------------------------------
@@ -42,7 +64,11 @@ public class Users {
     @Column(name = "password", nullable=false)
     private String password;
 
-
+    @OneToMany(targetEntity=Comments.class, mappedBy="user", fetch=FetchType.LAZY)
+    @Cascade(CascadeType.REMOVE)
+    @ElementCollection(targetClass=Comments.class)
+    @JsonManagedReference
+    private List<Comments> comments;
 
     //----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
@@ -54,7 +80,6 @@ public class Users {
     public Integer getId() {
         return this.id;
     }
-
 
     //----------------------------------------------------------------------
     // GETTERS & SETTERS FOR FIELDS
@@ -69,9 +94,19 @@ public class Users {
     public void setPassword( String password ) {
         this.password = password;
     }
+    
     public String getPassword() {
         return this.password;
     }
+    
+    public List<Comments> getComments() {
+        return this.comments;
+    }
+
+    public void setComments(List<Comments> coments) {
+        this.comments = comments;
+    }
+
 
 
     //----------------------------------------------------------------------

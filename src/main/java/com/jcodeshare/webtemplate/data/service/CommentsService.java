@@ -3,6 +3,7 @@ package com.jcodeshare.webtemplate.data.service;
 import java.util.List;
 
 import com.jcodeshare.webtemplate.data.model.Comments;
+import com.jcodeshare.webtemplate.data.model.Users;
  
 public interface CommentsService {
     
@@ -13,8 +14,6 @@ public interface CommentsService {
     void deleteCommentsById(int id);
  
     Comments findById(int id);
-    
-    List<Comments> findByUserId(int userId);
  
     void updateComments(Comments Comments);
     

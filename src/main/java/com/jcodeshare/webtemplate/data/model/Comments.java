@@ -7,19 +7,36 @@ package com.jcodeshare.webtemplate.data.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
+import javax.persistence.ElementCollection;
 import javax.persistence.TemporalType;
+
 import static javax.persistence.GenerationType.IDENTITY;
+
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
+
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
+import javax.persistence.Access;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.jcodeshare.webtemplate.data.model.Users;
 
 @Entity
 @Table(name = "comments")
@@ -43,9 +60,6 @@ public class Comments {
     @Column(name = "comment", nullable=false)
     private String comment;
 
-    @Column(name = "user_id", nullable=false)
-    private Integer userId;
-
     @Column(name = "create_date", nullable=false)
     @DateTimeFormat(pattern="dd/MM/yyyy")
     private Date createDate;
@@ -54,7 +68,11 @@ public class Comments {
     @Temporal(TemporalType.DATE)
     private Date createTs;
 
-
+    //@Access(AccessType.PROPERTY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id",  updatable = false, insertable = false)
+    @JsonBackReference
+    private Users user;
 
     //----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
@@ -84,14 +102,15 @@ public class Comments {
     public String getComment() {
         return this.comment;
     }
-
-    public void setUserId( Integer userId ) {
-        this.userId = userId;
-    }
-    public Integer getUserId() {
-        return this.userId;
+    
+    public Users getUser() {
+        return this.user;
     }
 
+    public void setUser( Users user ) {
+        this.user = user;
+    }
+    
     public void setCreateDate( Date createDate ) {
         this.createDate = createDate;
     }
@@ -119,7 +138,7 @@ public class Comments {
         sb.append("|");
         sb.append(comment);
         sb.append("|");
-        sb.append(userId);
+        sb.append(user);
         sb.append("|");
         sb.append(createDate);
         sb.append("|");

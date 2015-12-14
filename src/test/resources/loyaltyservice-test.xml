@@ -12,6 +12,7 @@
    <context:annotation-config />
 
    <context:component-scan base-package="com.jcodeshare.webtemplate.data" />
+   <context:component-scan base-package="com.jcodeshare.webtemplate.data.model" />
    <context:component-scan base-package="com.jcodeshare.webtemplate.data.service" />
    <context:component-scan base-package="com.jcodeshare.webtemplate.service" />
 

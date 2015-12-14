@@ -27,6 +27,9 @@ public class CommentsServiceTest extends AbstractJUnit4SpringContextTests {
     
     @Autowired
     CommentsService service;
+
+    @Autowired
+    UsersService userService;
     
     private final Logger logger = LoggerFactory
             .getLogger(CommentsServiceTest.class);
@@ -34,6 +37,7 @@ public class CommentsServiceTest extends AbstractJUnit4SpringContextTests {
     @Test
     public void testCommentsService() throws Exception {
 
+        Users user = userService.findById(Users.DEFAULT_USER_ID);
         /*
          * Create a comment1
          */
@@ -42,7 +46,7 @@ public class CommentsServiceTest extends AbstractJUnit4SpringContextTests {
         comments1.setCreateDate(new Date());
         comments1.setCreateTs(new Date());
         comments1.setComment(postComment);
-        comments1.setUserId(Users.DEFAULT_USER_ID);
+        comments1.setUser(user);
 
         /*
          * Create comment2
@@ -52,7 +56,7 @@ public class CommentsServiceTest extends AbstractJUnit4SpringContextTests {
         comments2.setCreateDate(new Date());
         comments2.setCreateTs(new Date());
         comments2.setComment(postComment2);
-        comments2.setUserId(Users.DEFAULT_USER_ID);
+        comments2.setUser(user);
 
         /*
          * Persist both Comments
@@ -60,14 +64,26 @@ public class CommentsServiceTest extends AbstractJUnit4SpringContextTests {
         service.saveComments(comments1);
         service.saveComments(comments2);
 
+        logger.info("What is user.id: " + user.getId());
         /*
          * Get all Comments list from database
          */
-        List<Comments> allComments = service.findAllComments();
+        List<Comments> allComments = userService.findAllComments(user);
+        for (Comments comment : allComments) {
+
+            if (comment.getId() == comments1.getId()) { assertTrue("commentsService.findByUser() found comment 1: " + comments1,  comments1.getComment().equals(postComment)); }
+            if (comment.getId() == comments2.getId()) { assertTrue("commentsService.findByUser() found comment 2: " + comments2,  comments2.getComment().equals(postComment2)); }
+        }        
+
+
+        /*
+         * Get all Comments list from database
+         */
+        allComments = service.findAllComments();
         boolean comment1Added = false;
         boolean comment2Added = false;
         for (Comments comment : allComments) {
-            logger.debug("found comment: " + comment);
+            
             if (comment.getId() == comments1.getId()) { comment1Added = true; }
             if (comment.getId() == comments2.getId()) { comment2Added = true; }
         }
@@ -82,7 +98,7 @@ public class CommentsServiceTest extends AbstractJUnit4SpringContextTests {
         allComments = service.findAllComments();
         comment1Added = false;
         for (Comments comment : allComments) {
-            logger.debug("found comment: " + comment);
+
             if (comment.getId() == comments1.getId()) { comment1Added = true; }
             if (comment.getId() == comments2.getId()) { comment2Added = true; }
         }        
@@ -96,7 +112,7 @@ public class CommentsServiceTest extends AbstractJUnit4SpringContextTests {
         Comments comments = service.findById(comments2.getId());
         comments.setComment(newOne);
         service.updateComments(comments);
-
+            
         /*
          * Get all Comments list from database
          */

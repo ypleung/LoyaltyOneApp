@@ -33,8 +33,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
+import java.nio.charset.Charset;
+import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:loyaltyservice-test.xml" })
@@ -49,8 +60,8 @@ public class CommentsControllerTest {
     
     private MockMvc mockMvc;
     
-//    @Resource
-//    private FilterChainProxy springSecurityFilterChain;
+    //@Resource
+    //private FilterChainProxy springSecurityFilterChain;
     
     @Resource
     private WebApplicationContext webApplicationContext;
@@ -58,6 +69,7 @@ public class CommentsControllerTest {
     @Before
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+//                .addFilter(springSecurityFilterChain)
                 .build();
     }
     private final Logger logger = LoggerFactory.getLogger(CommentsControllerTest.class);
@@ -74,9 +86,27 @@ public class CommentsControllerTest {
         this.mockMvc.perform(
                    post("/addComment").contentType(MediaType.APPLICATION_JSON).content(data.toString())
                    );
+        
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        //mapper.getSerializerProvider().setNullValueSerializer(new MyNullKeySerializer());
+        
+        logger.info("JSON STRING: \n" +data.toString());
+        logger.info("JSON JACKSON: \n" + mapper.writeValueAsString(data));
 //        NEED TO FIGURE OUT how to handle nested @autowired
-//        MvcResult result = this.mockMvc.perform(
-//                post("/addComment").contentType(MediaType.APPLICATION_JSON).content(data.toString())
+//        MvcResult result = this.mockMvc.perform(post("/addComment")
+//                .contentType(new 
+//                        MediaType(
+//                                MediaType.APPLICATION_JSON.getType(), 
+//                                MediaType.APPLICATION_JSON.getSubtype(), 
+//                                Charset.forName("utf8"))
+//                )
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .content(
+//                        mapper.writeValueAsBytes(data)
+//                        )
 //                ).andExpect(status().isOk()).andReturn();
 
 //        String returnString = result.getResponse().getContentAsString(); 
@@ -92,5 +122,17 @@ public class CommentsControllerTest {
 //                inputString.equals(expectedString));
               
     }
+    
+    class MyNullKeySerializer extends JsonSerializer<Object>
+    {
+      @Override
+      public void serialize(Object nullKey, JsonGenerator jsonGenerator, SerializerProvider unused) 
+          throws IOException, JsonProcessingException
+      {
+        jsonGenerator.writeFieldName("");
+      }
+    }
+    
+
 }
 
