@@ -66,8 +66,39 @@ public class UsersController {
 
     }
     
-    @RequestMapping(value = "/getUserComments", method = RequestMethod.POST)
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     public FormActionResult userRegister(
+            @RequestBody FormData form,
+            @CookieValue(value = "userCookie", defaultValue = Users.DEFAULT_USERNAME) String userCookie,
+            HttpServletResponse response) {
+
+        Users user = new Users();
+        user.setPassword(form.getPassword());
+        user.setUsername(form.getUsername());
+        userService.saveUsers(user);
+
+        String loginMsg = "Failed to create user.";
+        String code = "301";
+        logger.info("User: " + user);
+        logger.info("Form: " + form);
+
+        if ((user != null) && (user.getId() > 0)) {
+                response.addCookie(new Cookie("userCookie", user.getUsername()));
+                loginMsg = "User "+ user.getUsername() + " was successfuly created.";
+                code = "200";
+        }
+
+        FormActionResult result = new FormActionResult();
+        result.setCode(code);
+        result.setMsg(loginMsg);
+        result.setFormData(form);
+        return result;
+
+    }
+
+    
+    @RequestMapping(value = "/getUserComments", method = RequestMethod.POST)
+    public FormActionResult getUserComments(
             @RequestBody FormData form,
             @CookieValue(value = "userCookie", defaultValue = Users.DEFAULT_USERNAME) String userCookie,
             HttpServletResponse response) {

@@ -18,17 +18,21 @@
    <welcome-file-list>
       <welcome-file>index.jsp</welcome-file>
    </welcome-file-list>
-
+ 
    <security-constraint>
       <web-resource-collection>
          <web-resource-name>loyaltyone</web-resource-name>
          <url-pattern>/*</url-pattern>
+         <url-pattern>/addComment</url-pattern>
+         <url-pattern>/getUserComments</url-pattern>
+         <url-pattern>/register</url-pattern>
+         <url-pattern>/login</url-pattern>
       </web-resource-collection>
       <user-data-constraint>
          <transport-guarantee>CONFIDENTIAL</transport-guarantee>
       </user-data-constraint>
    </security-constraint>
-
+ 
 
 </web-app>
 <!-- # Copyright by YP Leung, 2015 Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php -->

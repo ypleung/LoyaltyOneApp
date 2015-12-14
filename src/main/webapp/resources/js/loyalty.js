@@ -41,6 +41,7 @@ jQuery(document).ready(
             var input = {};
             input["username"] = $("#regUsername").val();
             input["password"] = $("#regPassword").val();
+            //alert ("register: " + url)
             ajaxSendUrl(url, input, displayLogin, {});
 
          });
@@ -74,6 +75,7 @@ jQuery(document).ready(
 
          $('#main').on('submit','#replyForm', function() {
                   var url = baseurl + "addComment";
+                  //alert("Url: " + url)
                   var obj = convertSerialFormToJson($('#replyForm')
                         .serializeArray());
 
