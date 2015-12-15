@@ -39,12 +39,13 @@ public class CommentsController {
     public FormActionResult addComment(@RequestBody FormData form, @CookieValue(value = "userCookie", defaultValue = Users.DEFAULT_USERNAME) String userCookie, HttpServletResponse response) {
         
         logger.info("Calling AddComment Action: with form: " + form);
-        
+        Users user = usersService.findByUsername(userCookie);
+        logger.info("ADD COMMENT: " + user);       
         Comments comments = new Comments();
         comments.setCreateDate(new Date());
         comments.setCreateTs(new Date());
         comments.setComment(form.getComment());
-        comments.setUser(usersService.findById(Users.DEFAULT_USER_ID));
+        comments.setUser(user);
         try {
         String parentId = form.getParentId();
         if( parentId != null && !parentId.isEmpty()) { comments.setParentId(Integer.parseInt(parentId));  };
@@ -61,16 +62,12 @@ public class CommentsController {
         logger.info("Calling AddComment Action: saved a comment entity: " + comments);
         
         form.setUsername(userCookie);
+        form.setCommentDate(comments.getCreateTs()+"");
         FormActionResult result = new FormActionResult();       
         result.setCode("200");
         result.setMsg("");
         result.setFormData(form);
         
-        logger.info("Calling AddComment Action: return: " + form);
-        String user = form.getUsername();
-        if ((user==null) || (user.length() == 0)) {
-            user = Users.DEFAULT_USERNAME;
-        }
         return result;
     }
     

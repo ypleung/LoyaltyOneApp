@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.ElementCollection;
+import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -65,12 +66,11 @@ public class Comments {
     private Date createDate;
 
     @Column(name = "create_ts", nullable=false, columnDefinition="DATETIME")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createTs;
 
-    //@Access(AccessType.PROPERTY)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id",  updatable = false, insertable = false)
+    @JoinColumn(name = "user_id")
     @JsonBackReference
     private Users user;
 

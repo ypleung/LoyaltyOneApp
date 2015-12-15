@@ -10,6 +10,7 @@ public class FormData {
     String parentId;
     String nesting;
     String password;
+    String commentDate;
 
     public String getComment() {
         return comment;
@@ -43,6 +44,14 @@ public class FormData {
         this.commentId = commentId;
     }
     
+    public String getCommentDate() {
+        return commentDate;
+    }
+
+    public void setCommentDate(String commentDate) {
+        this.commentDate = commentDate;
+    }
+    
     public String getParentId() {
         return parentId;
     }
@@ -66,6 +75,7 @@ public class FormData {
                   "\" , \"password\": \"" + password + 
                   "\" , \"parentId\": \"" + parentId +
                   "\" , \"nesting\": \"" + nesting +
+                  "\" , \"commentDate\": \"" + commentDate +
                   "\" , \"commentId\": \"" + commentId +  "\" }";
     }
 

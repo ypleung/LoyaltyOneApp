@@ -10,7 +10,7 @@
                <textarea class="form-control" required rows="2" id="comment"></textarea>
             </div>
             <br/>
-            <button type="submit" class="btn btn-default">Submit</button>
+            <button type="submit" class="btn btn-default">Done</button>
          </form>
       </div>
       <div class="col-sm-9" id="displayComment"></div>
@@ -38,7 +38,7 @@
 
          </div>
          <div class="modal-footer">
-            <button type="submit" class="btn btn-default">Submit</button>
+            <button type="submit" class="btn btn-default">Done</button>
          </div> 
          </form>
       </div>

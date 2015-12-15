@@ -37,7 +37,7 @@ import java.nio.charset.Charset;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+//import org.codehaus.jackson.map.annotate.JsonSerialize;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import com.fasterxml.jackson.core.JsonGenerator;

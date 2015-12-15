@@ -105,15 +105,31 @@ footer {
       <div id="main" class="tab-pane fade in active"></div>
    </div>
    <br/>
+   <hr/>
    <div id="location">
-<div class="container">
-   <div id="commentsTable" class="row">
-      <div class="col-sm-9">
-      <p><b>CITY: </b><span id="city"></span> <b>LATITUDE: </b><span id="latitude"></span> <b>LONGITUDE: </b><span id="longitude"></span></p>
+      <div class="container">
+         <div id="locationData" class="row">
+            <div class="col-sm-9">
+               <p>
+                  <b>CITY: </b><span id="city"></span> <b>LATITUDE:
+                  </b><span id="latitude"></span> <b>LONGITUDE: </b><span
+                     id="longitude"></span>
+               </p>
+            </div>
+         </div>
       </div>
-      </div></div>
    </div>
-
+   <hr/>
+   <div id="userComments">
+      <div class="container">
+         <div id="myComments" class="row">
+            <div class="col-sm-9">
+               <div id="myCommentsList">
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>   
    <br>
 
    <nav class="navbar navbar-inverse">

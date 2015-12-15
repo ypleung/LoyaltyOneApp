@@ -6,6 +6,9 @@ import java.util.List;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.jcodeshare.webtemplate.data.model.Comments;
 import com.jcodeshare.webtemplate.data.model.Users;
 import com.jcodeshare.webtemplate.data.service.CommentsService;
@@ -21,6 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RestController
 public class UsersController {
@@ -47,8 +56,8 @@ public class UsersController {
 
         String loginMsg = "Failed to login.";
         String code = "300";
-        logger.info("User: " + user);
-        logger.info("Form: " + form);
+        logger.info("LOGIN User: " + user);
+        logger.info("LOGIN Form: " + form);
         
         if ((user != null) && (user.getId() > 0)) {
             if (user.getPassword().equals(form.getPassword())) {
@@ -102,18 +111,29 @@ public class UsersController {
             @RequestBody FormData form,
             @CookieValue(value = "userCookie", defaultValue = Users.DEFAULT_USERNAME) String userCookie,
             HttpServletResponse response) {
-
-        Users user = userService.findByUsername(form.getUsername());
+        logger.info("GETUSERCOMMENTS userCookie: " + userCookie);
+        Users user = userService.findByUsername(userCookie);
         List comments = userService.findAllComments(user);
         
-        logger.info("User: " + user);
-        logger.info("Form: " + form);
+        logger.info("GETUSERCOMMENTS user: " + user);
+        logger.info("GETUSERCOMMENTS form: " + form);
         String code = "200";
         
         FormActionResult result = new FormActionResult();
         result.setCode(code);
-        //result.setUserComments(comments);
+        result.setComments(comments);
         result.setFormData(form);
+        
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        try {
+        logger.info("JSON JACKSON: \n" + mapper.writeValueAsString(result));
+        logger.info("JSON JACKSON: \n" + mapper.writeValueAsString(result.getComments()));
+        } catch (Exception je) {
+            je.printStackTrace();
+        }
+        logger.info("Result: " + result);
         return result;
 
     }

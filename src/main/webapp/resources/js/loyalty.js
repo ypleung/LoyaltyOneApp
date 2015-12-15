@@ -5,6 +5,9 @@
 var replyFormParentId;
 var replyFormNesting;
 var loadComments;
+var city;
+var country = "ca";
+var appid;
 
 jQuery(document).ready(
       function($) {
@@ -20,6 +23,8 @@ jQuery(document).ready(
             input["username"] = $("#username").val();
             input["password"] = $("#password").val();
             ajaxSendUrl(url, input, displayLogin, {});
+            //var commentsUrl = baseurl + "getUserComments";
+            //ajaxSendUrl(commentsUrl, input, displayUserComments, {});
 
          });
          
@@ -103,8 +108,8 @@ function addCommentDiv(node, data) {
       indentNum = obj.formData.nesting;
       commentString = "<div class=\"col-sm-" + indentNum + "\"></div>"
             + "<div class=\"col-sm-" + (9 - indentNum) + "\">"
-            + "<span align=\"left\"><lead>" + obj.formData.comment
-            + "</lead></span> ";
+            + "<p><span align=\"left\"><lead>" + obj.formData.comment
+            + "</lead></span></p> ";
    }
 
    $(
@@ -112,7 +117,11 @@ function addCommentDiv(node, data) {
                + commentString
                + "Posted By: <span align=\"right\"><small>"
                + obj.formData.username
-               + "</small></span> <br/> <span>"
+               + "</small></span> "
+               + "On: <span align=\"right\"><small>" 
+               + obj.formData.commentDate
+               + "</small></span>"
+               +" <br/> <span>"
                + "<a id=\""
                + obj.formData.commentId
                + "replyButton\" type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#replyFormModal\">Reply</a>"
@@ -187,11 +196,36 @@ function displayLogin(arg, data) {
       //alert ("Logged In!");
       $("#userDisplay").html("Welcome " + obj.formData.username);
       $("#userService").hide();
+      var commentsUrl = baseurl + "getUserComments";
+      ajaxSendUrl(commentsUrl, obj.formData, displayUserComments, {});
+
    } else {
       alert (obj.msg);
    }
    $("#loadCommentsTab").val("1");
 
+}
+
+function displayUserComments(arg, data) {
+   var obj = data;
+   if (obj.code == "200") {
+
+      var comments = obj.comments;
+      var myCommentsStr = 
+         "<table class=\"table\"><thead><tr><th>All My Comments</th><th>Date</th></tr></thead><tbody>" ;
+      for (var i = 0; i < comments.length; i++) {
+
+         myCommentsStr = myCommentsStr + "<tr>";
+         myCommentsStr = myCommentsStr + "<td>" + comments[i].comment + "</td>";
+         myCommentsStr = myCommentsStr + "<td>" + new Date(comments[i].createTs) + "</td>";
+         myCommentsStr = myCommentsStr + "</tr>";
+      }
+      myCommentsStr = myCommentsStr + "</tbody></table>";
+
+      $("#myCommentsList").html(myCommentsStr);
+   } else {
+      alert (obj.msg);
+   }
 }
 
 function chkPassword(password, verifyPassword) {
@@ -232,9 +266,12 @@ function geoSuccess (position) {
    var long = userPos.coords.longitude; 
    $('#latitude').html(lat);
    $('#longitude').html(long); 
+   setCookie("lat", lat);
+   setCookie("long", long);
    
-   var city = getCity(lat, long);
+   city = getCity(lat, long);
    //alert ("geo city: " + city);
+
 
 }
 
@@ -263,7 +300,14 @@ function getCity (lat, long) {
                        if (types[0] =="locality") {
                           city = v1[i].long_name;
                           //alert ("city: " + city);
-                      } 
+                          setCookie("city", city);
+
+                       }
+                       if (types[0] =="country") {
+                          country = v1[i].short_name;
+                          //alert ("country: " + country);
+
+                       } 
                     }
               
                  }          
@@ -275,10 +319,11 @@ function getCity (lat, long) {
         });
         $('#city').html(city); 
    }); 
-
 }
 
-
+function setCookie(cname, cvalue) {
+   document.cookie = cname + "=" + cvalue + "; " 
+} 
 
 
 /*
