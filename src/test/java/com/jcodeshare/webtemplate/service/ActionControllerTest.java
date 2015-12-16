@@ -1,26 +1,30 @@
 package com.jcodeshare.webtemplate.service;
 
+import com.google.gson.Gson;
 import com.jcodeshare.webtemplate.service.ActionController;
 import com.jcodeshare.webtemplate.service.webdata.FormData;
 import com.jcodeshare.webtemplate.service.webdata.FormActionResult;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
+
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.http.MediaType;
-
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:loyaltyservice-test.xml" })
@@ -43,12 +47,12 @@ public class ActionControllerTest {
            new ActionController()).build();
         MvcResult result = this.mockMvc.perform(get("/getText").contentType(MediaType.APPLICATION_JSON).content(data.toString()))
            .andExpect(status().isOk()).andReturn();
-        String returnString = result.getResponse().getContentAsString();        
-        ObjectMapper objectMapper = new ObjectMapper();
+        String returnString = result.getResponse().getContentAsString();  
+        Gson gson = new Gson();
         logger.info("Call to /getText returned: " +returnString);
          
         //convert json string to object
-        FormActionResult returnData = objectMapper.readValue(returnString.getBytes(), FormActionResult.class);
+        FormActionResult returnData = gson.fromJson(returnString, FormActionResult.class);
         String expectedString = returnData.getFormData().getComment();
         logger.debug("COMMENT ADDED: " + expectedString);
         

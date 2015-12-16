@@ -22,14 +22,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.core.JsonProcessingException;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.annotation.JsonInclude;
+//import com.fasterxml.jackson.databind.SerializationFeature;
+//import com.fasterxml.jackson.databind.JsonSerializer;
+//import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 
 @RestController
 public class UsersController {
@@ -105,7 +110,7 @@ public class UsersController {
 
     }
 
-    
+    @Transactional
     @RequestMapping(value = "/getUserComments", method = RequestMethod.POST)
     public FormActionResult getUserComments(
             @RequestBody FormData form,
@@ -124,12 +129,21 @@ public class UsersController {
         result.setComments(comments);
         result.setFormData(form);
         
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        Gson gson = new GsonBuilder().setExclusionStrategies(
+            new ExclusionStrategy() {
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+            public boolean shouldSkipField(FieldAttributes f) {
+                return (f.getDeclaringClass() == Users.class);
+            }
+         }).create();
+
         try {
-        logger.info("JSON JACKSON: \n" + mapper.writeValueAsString(result));
-        logger.info("JSON JACKSON: \n" + mapper.writeValueAsString(result.getComments()));
+            
+        logger.info("JSON JACKSON: \n" + gson.toJson(result));
+        logger.info("JSON JACKSON: \n" + gson.toJson(result.getComments()));
         } catch (Exception je) {
             je.printStackTrace();
         }

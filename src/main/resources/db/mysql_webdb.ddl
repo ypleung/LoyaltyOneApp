@@ -6,7 +6,6 @@ create table users (
   id int not null auto_increment,
   username varchar(30) not null,
   password varchar(20) not null,
-  location_id int,
   primary key(`id`) using BTREE
 ) engine=InnoDB default CHARSET=utf8;
 
@@ -27,6 +26,9 @@ create table comments (
   user_id int not null default 1,
   create_date date not null,
   create_ts timestamp not null,
+  location_id int,
+  foreign key(`location_id`) references location(`id`),
+  foreign key(`user_id`) references users(`id`),
   primary key(`id`) using BTREE
 ) engine=InnoDB default CHARSET=utf8;
 

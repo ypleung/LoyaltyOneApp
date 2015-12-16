@@ -6,14 +6,23 @@ var replyFormParentId;
 var replyFormNesting;
 var loadComments;
 var city;
-var country = "ca";
-var appid;
+var commentsUrl = baseurl + "getUserComments";
+var userCookieKey = "userCookie";
+var weatherurlappid;
 
 jQuery(document).ready(
       function($) {
          
          runGeoLocation();
          
+         // comments div load user comments event
+         $("#topNavbar").on("click", "a", function (e) {
+            if($(this).text() == "Comments") {
+               if (getCookie(userCookieKey) != "ANONYMOUS")
+                  ajaxSendUrl(commentsUrl, {}, displayUserComments, {});
+            }
+         });
+                  
          // formLogin event
          $(document).on('submit', '#formLogin', function(e) {
             e.preventDefault();
@@ -23,9 +32,6 @@ jQuery(document).ready(
             input["username"] = $("#username").val();
             input["password"] = $("#password").val();
             ajaxSendUrl(url, input, displayLogin, {});
-            //var commentsUrl = baseurl + "getUserComments";
-            //ajaxSendUrl(commentsUrl, input, displayUserComments, {});
-
          });
          
          // formRegister event
@@ -51,6 +57,7 @@ jQuery(document).ready(
 
          });
 
+         /*!
          //alert(" loading: " + $("#loadCommentsTab").val());
          loadComments = $("#loadCommentsTab").val();
          if ((loadComments == "0") || (!loadComments)) {
@@ -68,36 +75,39 @@ jQuery(document).ready(
          } else {
             $("#loadCommentsTab").val("0");
          }
+         */
 
          // Register dynamic events for comments form
-         $('#main').on('submit', '#commentForm', function() {
+         $('#main').on('submit', '#commentForm', function(e) {
+            e.preventDefault();
             var url = baseurl + "addComment";
             var input = {};
             input["comment"] = $("#comment").val();
             ajaxSendUrl(url, input, addCommentDiv, $("#displayComment"));
-
          });
 
-         $('#main').on('submit','#replyForm', function() {
-                  var url = baseurl + "addComment";
-                  //alert("Url: " + url)
-                  var obj = convertSerialFormToJson($('#replyForm')
-                        .serializeArray());
+         $('#main').on('submit','#replyForm', function(e) {
+            e.preventDefault();
+            var url = baseurl + "addComment";
+            //alert("Url: " + url)
+            var obj = convertSerialFormToJson($('#replyForm')
+                  .serializeArray());
 
-                  obj["parentId"] = replyFormParentId;
-                  obj["nesting"] = ++replyFormNesting;
+            obj["parentId"] = replyFormParentId;
+            obj["nesting"] = ++replyFormNesting;
 
-                  ajaxSendUrl(url, obj, addCommentDiv, $("#" + obj["parentId"]
-                        + "ReplyDiv"));
-                  $("#replyFormModal").modal('hide');
+            ajaxSendUrl(url, obj, addCommentDiv, $("#" + obj["parentId"]
+            + "ReplyDiv"));
+            $("#replyFormModal").modal('hide');
 
-               });
-      });
+         });
+     });
 
 function addCommentDiv(node, data) {
    var obj = data;
    var commentString;
    var indentNum;
+   var cityString;
 
    if (!obj.formData.nesting) {
       obj.formData.nesting = 0;
@@ -111,6 +121,17 @@ function addCommentDiv(node, data) {
             + "<p><span align=\"left\"><lead>" + obj.formData.comment
             + "</lead></span></p> ";
    }
+   
+   city = obj.formData.city;
+   var longStr = obj.formData.longitude+"";
+   var latStr = obj.formData.latitude+"";
+   
+   var cityStr = (city) ? "From: <span align=\"right\"><small>" 
+         + obj.formData.city + " (lat: " 
+         + formatLat(obj.formData.latitude.toString())
+         + ", long: " 
+         + formatLat(obj.formData.longitude.toString())
+         + ")</small></span>" :"";
 
    $(
          "<div class=\"col-sm-9\">"
@@ -120,7 +141,8 @@ function addCommentDiv(node, data) {
                + "</small></span> "
                + "On: <span align=\"right\"><small>" 
                + obj.formData.commentDate
-               + "</small></span>"
+               + "</small></span> <br/>"
+               + cityStr
                +" <br/> <span>"
                + "<a id=\""
                + obj.formData.commentId
@@ -134,6 +156,8 @@ function addCommentDiv(node, data) {
                + "<div id=\"" + obj.formData.commentId
                + "ReplyDiv\"class=\"col-sm-9\"></div>").insertAfter(node);
 
+   if (obj.formData.username != "ANONYMOUS")
+       ajaxSendUrl(commentsUrl, obj.formData, displayUserComments, {});
 }
 
 function convertSerialFormToJson(serialForm) {
@@ -157,7 +181,6 @@ function replyCommentModal(data) {
    // launch modal window
    replyFormParentId = obj.parentId;
    replyFormNesting = obj.nesting;
-
 }
 
 function ajaxSendUrl(sendUrl, input, callMe, callArg1) {
@@ -194,9 +217,9 @@ function displayLogin(arg, data) {
    var obj = data;
    if (obj.code == "200") {
       //alert ("Logged In!");
-      $("#userDisplay").html("Welcome " + obj.formData.username);
+      $("#userDisplay").html("Welcome " + obj.formData.username + "");
       $("#userService").hide();
-      var commentsUrl = baseurl + "getUserComments";
+
       ajaxSendUrl(commentsUrl, obj.formData, displayUserComments, {});
 
    } else {
@@ -210,14 +233,20 @@ function displayUserComments(arg, data) {
    var obj = data;
    if (obj.code == "200") {
 
+      var locationStr = "";
       var comments = obj.comments;
       var myCommentsStr = 
-         "<table class=\"table\"><thead><tr><th>All My Comments</th><th>Date</th></tr></thead><tbody>" ;
+         "<table class=\"table\"><thead><tr><th class=\"col-xs-6\">All My Comments</th><th class=\"col-xs-2\">Date</th><th class=\"col-xs-2\">Location</th></tr></thead><tbody>" ;
       for (var i = 0; i < comments.length; i++) {
-
+         if (comments[i].location) { 
+            locationStr = comments[i].location.city + "<br/>"
+               + "(" + formatLat(comments[i].location.latitude.toString()) + "," 
+               + formatLat(comments[i].location.longitude.toString()) + ")";
+         } 
          myCommentsStr = myCommentsStr + "<tr>";
          myCommentsStr = myCommentsStr + "<td>" + comments[i].comment + "</td>";
-         myCommentsStr = myCommentsStr + "<td>" + new Date(comments[i].createTs) + "</td>";
+         myCommentsStr = myCommentsStr + "<td>" + (new Date(comments[i].createTs)+"").replace(/[^ ]*[ ](.{17}).*/,"\$1") + "</td>";
+         myCommentsStr = myCommentsStr + "<td>" + locationStr + "</td>";
          myCommentsStr = myCommentsStr + "</tr>";
       }
       myCommentsStr = myCommentsStr + "</tbody></table>";
@@ -247,11 +276,6 @@ function isSafeChar(str) {
    return "0";
 }
 
-
-window.onunload = function(){
-   $("#loadCommentsTab").val("0"); 
-}
-
 function runGeoLocation () {
 
    if (navigator.geolocation) {
@@ -264,10 +288,10 @@ function geoSuccess (position) {
    //alert (" getting  geo: lat " + userPos.coords.latitude);
    var lat = userPos.coords.latitude;
    var long = userPos.coords.longitude; 
-   $('#latitude').html(lat);
-   $('#longitude').html(long); 
-   setCookie("lat", lat);
-   setCookie("long", long);
+   $('#latitude').html(formatLat(lat.toString()));
+   $('#longitude').html(formatLat(long.toString())); 
+   setCookie("cookieLat", lat);
+   setCookie("cookieLong", long);
    
    city = getCity(lat, long);
    //alert ("geo city: " + city);
@@ -300,7 +324,7 @@ function getCity (lat, long) {
                        if (types[0] =="locality") {
                           city = v1[i].long_name;
                           //alert ("city: " + city);
-                          setCookie("city", city);
+                          setCookie("cookieCity", city);
 
                        }
                        if (types[0] =="country") {
@@ -321,10 +345,46 @@ function getCity (lat, long) {
    }); 
 }
 
+function getTemperature(data) {
+   var appStr = "";
+   if (getCookie("appid")) { appStr="&appid="+weatherurlappid; }
+   var url = 
+      "http://api.openweathermap.org/data/2.5/weather?q=" 
+      + city + "," + country.toLowerCase() + appStr;
+   var temp;
+   $.get(url).success(function(data) {
+      var obj = data;
+      temp = obj.main.temp;
+      alert ("Temperature: " + temp);
+      var urlParams = getQueryParams();
+      weatherurlappid = urlParams('appid');
+      setCookie("appid",weatherurlappid);
+   }); 
+}
+
+function formatLat(x) {
+   var str = x;
+   return str.replace(/^(-?[0-9]{2}\.[0-9]{1}).*/, "\$1");
+}
+
 function setCookie(cname, cvalue) {
    document.cookie = cname + "=" + cvalue + "; " 
-} 
+}
 
+function getCookie(name) {
+   var allCookies = "; " + document.cookie;
+   var parts = allCookies.split("; " + name + "=");
+   if (parts.length == 2) return parts.pop().split(";").shift();
+}
+
+function getQueryParams() {
+   var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+   return results[1] || 0;
+}
+
+window.onunload = function(){
+   $("#loadCommentsTab").val("0"); 
+}
 
 /*
  * ! # Copyright by YP Leung, 2015 Licensed under the MIT license:

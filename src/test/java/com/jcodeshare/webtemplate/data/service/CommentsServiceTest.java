@@ -3,6 +3,7 @@ package com.jcodeshare.webtemplate.data.service;
 import com.jcodeshare.webtemplate.data.service.CommentsService;
 import com.jcodeshare.webtemplate.data.model.Users;
 import com.jcodeshare.webtemplate.data.model.Comments;
+import com.jcodeshare.webtemplate.data.model.Location;
 
 import java.util.Date;
 import java.util.List;
@@ -57,7 +58,13 @@ public class CommentsServiceTest extends AbstractJUnit4SpringContextTests {
         comments2.setCreateTs(new Date());
         comments2.setComment(postComment2);
         comments2.setUser(user);
-
+        
+        Location location = new Location();
+        location.setCity("Toronto");
+        location.setLatitude(43.7667856f);
+        location.setLongitude(-79.2157072f);
+        comments2.setLocation(location);
+        
         /*
          * Persist both Comments
          */

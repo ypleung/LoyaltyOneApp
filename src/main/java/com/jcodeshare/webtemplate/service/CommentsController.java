@@ -12,6 +12,7 @@ import com.jcodeshare.webtemplate.data.service.CommentsService;
 import com.jcodeshare.webtemplate.data.service.UsersService;
 import com.jcodeshare.webtemplate.data.model.Comments;
 import com.jcodeshare.webtemplate.data.model.Users;
+import com.jcodeshare.webtemplate.data.model.Location;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
 
 @RestController
 public class CommentsController {
@@ -36,16 +39,32 @@ public class CommentsController {
     UsersService usersService;
     
     @RequestMapping(value = "/addComment", method = RequestMethod.POST)
-    public FormActionResult addComment(@RequestBody FormData form, @CookieValue(value = "userCookie", defaultValue = Users.DEFAULT_USERNAME) String userCookie, HttpServletResponse response) {
+    public FormActionResult addComment(@RequestBody FormData form, 
+            @CookieValue(value = "userCookie", defaultValue = Users.DEFAULT_USERNAME) String userCookie, 
+            @CookieValue(value = "cookieCity") String cookieCity, 
+            @CookieValue(value = "cookieLat") String cookieLat, 
+            @CookieValue(value = "cookieLong") String cookieLong, 
+            HttpServletResponse response) {
         
-        logger.info("Calling AddComment Action: with form: " + form);
+        Location location = null;
+        if ((cookieCity != null) && (cookieCity.length() > 0)) {
+            location = new Location();
+            location.setCity(cookieCity);
+            location.setLatitude(Float.parseFloat(cookieLat));
+            location.setLongitude(Float.parseFloat(cookieLong));
+        }
+        
+        logger.info("ADD COMMENT: " + form);
         Users user = usersService.findByUsername(userCookie);
-        logger.info("ADD COMMENT: " + user);       
+        logger.info("ADD COMMENT: " + user);
         Comments comments = new Comments();
         comments.setCreateDate(new Date());
         comments.setCreateTs(new Date());
         comments.setComment(form.getComment());
         comments.setUser(user);
+        
+        if (location != null) { comments.setLocation(location); }  
+        
         try {
         String parentId = form.getParentId();
         if( parentId != null && !parentId.isEmpty()) { comments.setParentId(Integer.parseInt(parentId));  };
@@ -53,8 +72,8 @@ public class CommentsController {
             logger.info("Did we throw exception here?");
         }
         
-        logger.info("Calling AddComment Autowire work: " + commentsService);
-        logger.info("Calling AddComment Action: created a comment entity: " + comments);
+        logger.info("ADD COMMENT: " + comments);
+        logger.info("ADD COMMENT LOCATION: " + comments.getLocation());
         commentsService.saveComments(comments);
         String commentId = "" + comments.getId();
         form.setCommentId(commentId);
@@ -63,10 +82,20 @@ public class CommentsController {
         
         form.setUsername(userCookie);
         form.setCommentDate(comments.getCreateTs()+"");
+        if (comments.getLocation() != null) {
+
+            form.setCity(location.getCity());
+            form.setLatitude(location.getLatitude()+"");
+            form.setLongitude(location.getLongitude()+"");
+            logger.info("ADD COMMENT SETTING CITY: " + form.getCity());
+        }
         FormActionResult result = new FormActionResult();       
         result.setCode("200");
         result.setMsg("");
         result.setFormData(form);
+        Gson gson = new Gson();
+        gson.toJson(result);
+        
         
         return result;
     }

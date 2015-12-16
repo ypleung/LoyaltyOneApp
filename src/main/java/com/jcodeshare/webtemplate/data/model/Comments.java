@@ -22,10 +22,10 @@ import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.persistence.CascadeType;
 
 import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
+//import org.hibernate.annotations.Type;
 
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
@@ -38,6 +38,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.jcodeshare.webtemplate.data.model.Users;
+import com.jcodeshare.webtemplate.data.model.Location;
 
 @Entity
 @Table(name = "comments")
@@ -69,11 +70,16 @@ public class Comments {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTs;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private Users user;
 
+    @OneToOne (cascade ={CascadeType.ALL},fetch = FetchType.EAGER)
+    @JoinColumn(name="location_id")
+    private Location location = null;
+
+    
     //----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
     //----------------------------------------------------------------------
@@ -114,6 +120,7 @@ public class Comments {
     public void setCreateDate( Date createDate ) {
         this.createDate = createDate;
     }
+    
     public Date getCreateDate() {
         return this.createDate;
     }
@@ -121,10 +128,18 @@ public class Comments {
     public void setCreateTs( Date createTs ) {
         this.createTs = createTs;
     }
+    
     public Date getCreateTs() {
         return this.createTs;
     }
+    
+    public Location getLocation() {
+        return this.location;
+    }
 
+    public void setLocation( Location location ) {
+        this.location = location;
+    }
 
     //----------------------------------------------------------------------
     // toString METHOD

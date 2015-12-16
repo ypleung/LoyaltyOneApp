@@ -11,6 +11,9 @@ public class FormData {
     String nesting;
     String password;
     String commentDate;
+    String city;
+    String latitude;
+    String longitude;
 
     public String getComment() {
         return comment;
@@ -68,6 +71,30 @@ public class FormData {
         this.nesting = nesting;
     }
     
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+    
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+    
     @Override
     public String toString() {
         return "{ \"comment\": \"" + comment + 
@@ -76,6 +103,9 @@ public class FormData {
                   "\" , \"parentId\": \"" + parentId +
                   "\" , \"nesting\": \"" + nesting +
                   "\" , \"commentDate\": \"" + commentDate +
+                  "\" , \"city\": \"" + city +
+                  "\" , \"longitude\": \"" + longitude +
+                  "\" , \"latitude\": \"" + latitude +
                   "\" , \"commentId\": \"" + commentId +  "\" }";
     }
 

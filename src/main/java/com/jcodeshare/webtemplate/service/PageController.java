@@ -28,7 +28,15 @@ public class PageController {
     @RequestMapping(value = "/", method = { RequestMethod.GET, RequestMethod.POST })
     public String getHome(HttpServletRequest request, ModelMap model, @CookieValue(value = "userCookie", defaultValue = Users.DEFAULT_USERNAME) String userCookie, HttpServletResponse response) {
         // Waste cookie on page reload.
-        response.addCookie(new Cookie("userCookie", Users.DEFAULT_USERNAME));
+        Cookie[] cookies = request.getCookies();
+        for(int i = 0; i< cookies.length ; ++i){
+            if(cookies[i].getName().equals("userCookie")){
+                cookies[i].setValue(Users.DEFAULT_USERNAME);
+            } else {
+                cookies[i].setMaxAge(0);
+            }
+            response.addCookie(cookies[i]);
+        } 
         return getPage(request,model);
     }
     

@@ -27,7 +27,7 @@ footer {
 </style>
 </head>
 <body>
-   
+
    <input type="hidden" id="loadCommentsTab" value="0"></input>
 
    <nav class="navbar navbar-inverse">
@@ -43,69 +43,92 @@ footer {
          <div class="collapse navbar-collapse" id="topNavbar">
             <ul class="nav navbar-nav">
                <li class="active"><a data-toggle="tab"
-                  href="#comments">Home</a></li>
+                  href="#home">Home</a></li>
+               <li class="active"><a data-toggle="tab"
+                  href="#comments">Comments</a></li>
                <li class="hidden"><a data-toggle="tab" href="#main">main</a></li>
-
             </ul>
             <div id="userService">
-            <ul  class="nav navbar-nav navbar-right">
-               <li class="dropdown" id="menuRegister"><a
-                  class="dropdown-toggle" href="#register"
-                  data-toggle="dropdown" id="navLogin">Register</a>
-                  <div class="dropdown-menu" style="padding:17px;">
-                     <form class="form" id="formRegister">
-                        <div class="form-group">
-                           <input name="rusername" id="regUsername" required
-                              placeholder="Username" type="text">
-                        </div>
-                        <div class="form-group">
-                           <input type="password" class="form-control"
-                              id="regPassword" required 
-                              name="rpassword"
-                              placeholder="Password">
-                        </div>
-                        <div class="form-group">
-                           <input type="password" class="form-control"
-                              id="regPasswordChk" required
-                              name="rpasswordchk"
-                              placeholder="Verify Password">
-                        </div>
-                        <br />
-                        <button type="submit" id="btnLogin" class="btn">Login</button>
-                     </form>
-                  </div></li>
-               <li class="dropdown" id="menuLogin"><a
-                  class="dropdown-toggle" href="#login"
-                  data-toggle="dropdown" id="navLogin">Login</a>
-                  <div class="dropdown-menu" style="padding:17px;">
-                     <form class="form" id="formLogin">
-                        <div class="form-group">
-                           <input name="username" id="username" required
-                              placeholder="Username" type="text">
-                        </div>
-                        <div class="form-group">
-                           <input name="password" id="password" required
-                              placeholder="Password" type="password">
-                        </div>
-                        <br />
-                        <button type="submit" id="btnLogin" class="btn">Login</button>
-                     </form>
-                  </div></li>
-            </ul>
+               <ul class="nav navbar-nav navbar-right">
+                  <li class="dropdown" id="menuRegister"><a
+                     class="dropdown-toggle" href="#register"
+                     data-toggle="dropdown" id="navLogin">Register</a>
+                     <div class="dropdown-menu" style="padding: 17px;">
+                        <form class="form" id="formRegister">
+                           <div class="form-group">
+                              <input name="rusername" id="regUsername"
+                                 required placeholder="Username"
+                                 type="text">
+                           </div>
+                           <div class="form-group">
+                              <input type="password"
+                                 class="form-control" id="regPassword"
+                                 required name="rpassword"
+                                 placeholder="Password">
+                           </div>
+                           <div class="form-group">
+                              <input type="password"
+                                 class="form-control"
+                                 id="regPasswordChk" required
+                                 name="rpasswordchk"
+                                 placeholder="Verify Password">
+                           </div>
+                           <br />
+                           <button type="submit" id="btnLogin"
+                              class="btn">Login</button>
+                        </form>
+                     </div>
+                  </li>
+                  <li class="dropdown" id="menuLogin"><a
+                     class="dropdown-toggle" href="#login"
+                     data-toggle="dropdown" id="navLogin">Login</a>
+                     <div class="dropdown-menu" style="padding: 17px;">
+                        <form class="form" id="formLogin">
+                           <div class="form-group">
+                              <input name="username" id="username"
+                                 required placeholder="Username"
+                                 type="text"/>
+                           </div>
+                           <div class="form-group">
+                              <input name="password" id="password"
+                                 required placeholder="Password"
+                                 type="password"/>
+                           </div>
+                           <br />
+                           <button type="submit" id="btnLogin"
+                              class="btn">Login</button>
+                        </form>
+                    </div>
+                   </li>
+               </ul>
             </div>
-            <ul class="nav navbar-right">
-               <li id="userDisplay"></li>
-            </ul>
+            <div style="vertical-align: middle; padding-right: 20px;">
+               <p>
+               <ul class="nav navbar-right">
+                  <li id="userDisplay"></li>
+               </ul>
+               </p>
+            </div>
          </div>
       </div>
    </nav>
-   <div id="ErrorDiv"><p class="bg-danger" id="ErrorText"></p></div>
-   <div class="tab-content">
-      <div id="home" class="tab-pane fade"></div>
-      <div id="main" class="tab-pane fade in active"></div>
+   <div id="ErrorDiv">
+      <p class="bg-danger" id="ErrorText"></p>
    </div>
-   <br/>
-   <hr/>
+   <div class="tab-content">
+      <div id="home" class="tab-pane fade in active">
+         <div class="container">
+            <div class="row">
+               <div class="col-sm-9">
+               <h4>Loyalty One Assignment</h4>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div id="main" class="tab-pane fade"></div>
+   </div>
+   <br />
+   <hr />
    <div id="location">
       <div class="container">
          <div id="locationData" class="row">
@@ -119,17 +142,8 @@ footer {
          </div>
       </div>
    </div>
-   <hr/>
-   <div id="userComments">
-      <div class="container">
-         <div id="myComments" class="row">
-            <div class="col-sm-9">
-               <div id="myCommentsList">
-               </div>
-            </div>
-         </div>
-      </div>
-   </div>   
+   <hr />
+
    <br>
 
    <nav class="navbar navbar-inverse">

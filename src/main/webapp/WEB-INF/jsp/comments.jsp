@@ -7,16 +7,31 @@
          <form id="commentForm" role="form">
             <div class="form-group">
                <label for="comment">Comment:</label>
-               <textarea class="form-control" required rows="2" id="comment"></textarea>
+               <textarea class="form-control" required rows="2"
+                  id="comment"></textarea>
             </div>
-            <br/>
+            <br />
             <button type="submit" class="btn btn-default">Done</button>
          </form>
       </div>
       <div class="col-sm-9" id="displayComment"></div>
    </div>
+   <br/>
+   <hr/>
+   <div class="row">
+      <div class="col-sm-9">
+         <div id="userComments">
+            <div class="container">
+               <div id="myComments" class="row">
+                  <div class="col-sm-9">
+                     <div id="myCommentsList"></div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
 
-   
    <!-- Modal -->
    <div id="replyFormModal" class="modal fade" role="dialog">
      <div class="modal-dialog">
@@ -44,6 +59,7 @@
       </div>
      </div>
    </div>
+
 
 </div>
 

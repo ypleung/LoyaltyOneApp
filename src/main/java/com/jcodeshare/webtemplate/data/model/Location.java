@@ -18,35 +18,13 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumns;
-import javax.persistence.JoinColumn;
-import javax.persistence.UniqueConstraint;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.ElementCollection;
-
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Cascade;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.jcodeshare.webtemplate.data.model.Comments;
 
 @Entity
-@Table(name = "users")
-public class Users {
+@Table(name = "location")
+public class Location {
 
     //private static final long serialVersionUID = 1L;
     
-    // 2 values means in the future we can have a static webtemplate data type reference
-    // and still meaningfully trace where information is relevant 
-    public final static int ANONYMOUS_USER_ID = 1;
-    public final static int DEFAULT_USER_ID = ANONYMOUS_USER_ID;
-    public final static String ANONYMOUS_USERNAME = "ANONYMOUS";
-    public final static String DEFAULT_USERNAME = ANONYMOUS_USERNAME;
-    public final static List<Comments> DEFAULT_EMPTY_LIST = new ArrayList<Comments>(0);
-
     //----------------------------------------------------------------------
     // ENTITY PRIMARY KEY ( BASED ON A SINGLE FIELD )
     //----------------------------------------------------------------------
@@ -58,17 +36,14 @@ public class Users {
     //----------------------------------------------------------------------
     // ENTITY DATA FIELDS 
     //----------------------------------------------------------------------    
-    @Column(name = "username", nullable=false)
-    private String username;
+    @Column(name = "city")
+    private String city;
 
-    @Column(name = "password", nullable=false)
-    private String password;
-
-    @OneToMany(targetEntity=Comments.class, mappedBy="user", fetch=FetchType.LAZY)
-    @Cascade(CascadeType.REMOVE)
-    @ElementCollection(targetClass=Comments.class)
-    @JsonManagedReference
-    private List<Comments> comments ;
+    @Column(name = "longitude")
+    private float longitude;
+    
+    @Column(name = "latitude")
+    private float latitude;
 
     //----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
@@ -84,30 +59,28 @@ public class Users {
     //----------------------------------------------------------------------
     // GETTERS & SETTERS FOR FIELDS
     //----------------------------------------------------------------------
-    public void setUsername( String username ) {
-        this.username = username;
+    public void setCity( String city ) {
+        this.city = city;
     }
-    public String getUsername() {
-        return this.username;
+    public String getCity() {
+        return this.city;
     }
 
-    public void setPassword( String password ) {
-        this.password = password;
+    public void setLatitude( float latitude ) {
+        this.latitude = latitude;
     }
     
-    public String getPassword() {
-        return this.password;
+    public float getLatitude() {
+        return this.latitude;
+    }    
+
+    public void setLongitude( float longitude ) {
+        this.longitude = longitude;
     }
     
-    public List<Comments> getComments() {
-        return this.comments;
-    }
-
-    public void setComments(List<Comments> coments) {
-        this.comments = comments;
-    }
-
-
+    public float getLongitude() {
+        return this.longitude;
+    } 
 
     //----------------------------------------------------------------------
     // toString METHOD
@@ -117,9 +90,11 @@ public class Users {
         StringBuffer sb = new StringBuffer(); 
         sb.append(id);
         sb.append("|");
-        sb.append(username);
+        sb.append(city);
         sb.append("|");
-        sb.append(password);
+        sb.append(longitude);
+        sb.append("|");
+        sb.append(latitude);
         return sb.toString(); 
     } 
 
