@@ -61,8 +61,8 @@ public class UsersController {
 
         String loginMsg = "Failed to login.";
         String code = "300";
-        logger.info("LOGIN User: " + user);
-        logger.info("LOGIN Form: " + form);
+        //logger.info("LOGIN User: " + user);
+        //logger.info("LOGIN Form: " + form);
         
         if ((user != null) && (user.getId() > 0)) {
             if (user.getPassword().equals(form.getPassword())) {
@@ -116,12 +116,12 @@ public class UsersController {
             @RequestBody FormData form,
             @CookieValue(value = "userCookie", defaultValue = Users.DEFAULT_USERNAME) String userCookie,
             HttpServletResponse response) {
-        logger.info("GETUSERCOMMENTS userCookie: " + userCookie);
+        //logger.info("GETUSERCOMMENTS userCookie: " + userCookie);
         Users user = userService.findByUsername(userCookie);
         List comments = userService.findAllComments(user);
         
-        logger.info("GETUSERCOMMENTS user: " + user);
-        logger.info("GETUSERCOMMENTS form: " + form);
+        //logger.info("GETUSERCOMMENTS user: " + user);
+        //logger.info("GETUSERCOMMENTS form: " + form);
         String code = "200";
         
         FormActionResult result = new FormActionResult();
@@ -142,12 +142,12 @@ public class UsersController {
 
         try {
             
-        logger.info("JSON JACKSON: \n" + gson.toJson(result));
-        logger.info("JSON JACKSON: \n" + gson.toJson(result.getComments()));
+        //logger.info("JSON JACKSON: \n" + gson.toJson(result));
+        //logger.info("JSON JACKSON: \n" + gson.toJson(result.getComments()));
         } catch (Exception je) {
             je.printStackTrace();
         }
-        logger.info("Result: " + result);
+        //logger.info("Result: " + result);
         return result;
 
     }

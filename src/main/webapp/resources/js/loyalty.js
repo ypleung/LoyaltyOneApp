@@ -6,9 +6,10 @@ var replyFormParentId;
 var replyFormNesting;
 var loadComments;
 var city;
+var country;
 var commentsUrl = baseurl + "getUserComments";
 var userCookieKey = "userCookie";
-var weatherurlappid;
+var weatherurlappid = "2de143494c0b295cca9337e1e96b00e0";
 
 jQuery(document).ready(
       function($) {
@@ -131,7 +132,7 @@ function addCommentDiv(node, data) {
          + formatLat(obj.formData.latitude.toString())
          + ", long: " 
          + formatLat(obj.formData.longitude.toString())
-         + ")</small></span>" :"";
+         + ") " + obj.formData.temperature.toString().substr(0,4) + "C</small></span>" :"";
 
    $(
          "<div class=\"col-sm-9\">"
@@ -235,26 +236,30 @@ function displayUserComments(arg, data) {
 
       var locationStr = "";
       var comments = obj.comments;
-      var myCommentsStr = 
-         "<table class=\"table\"><thead><tr><th class=\"col-xs-6\">All My Comments</th><th class=\"col-xs-2\">Date</th><th class=\"col-xs-2\">Location</th></tr></thead><tbody>" ;
-      for (var i = 0; i < comments.length; i++) {
-         if (comments[i].location) { 
-            locationStr = comments[i].location.city + "<br/>"
-               + "(" + formatLat(comments[i].location.latitude.toString()) + "," 
-               + formatLat(comments[i].location.longitude.toString()) + ")";
-         } 
-         myCommentsStr = myCommentsStr + "<tr>";
-         myCommentsStr = myCommentsStr + "<td>" + comments[i].comment + "</td>";
-         myCommentsStr = myCommentsStr + "<td>" + (new Date(comments[i].createTs)+"").replace(/[^ ]*[ ](.{17}).*/,"\$1") + "</td>";
-         myCommentsStr = myCommentsStr + "<td>" + locationStr + "</td>";
-         myCommentsStr = myCommentsStr + "</tr>";
-      }
-      myCommentsStr = myCommentsStr + "</tbody></table>";
+      if ((comments) && (comments.length > 0) ) {
+         var myCommentsStr = 
+            "<table class=\"table\"><thead><tr><th class=\"col-xs-6\">All My Comments</th><th class=\"col-xs-2\">Date</th><th class=\"col-xs-2\">Location</th></tr></thead><tbody>" ;
+         for (var i = 0; i < comments.length; i++) {
+            if (comments[i].location) { 
+               locationStr = comments[i].location.city + "<br/>"
+                  + "(" + formatLat(comments[i].location.latitude.toString()) + "," 
+                  + formatLat(comments[i].location.longitude.toString()) + ") <br/>"
+                  + comments[i].location.temperature.toString().substr(0,4) + "C " ;
+            } 
+            myCommentsStr = myCommentsStr + "<tr>";
+            myCommentsStr = myCommentsStr + "<td>" + comments[i].comment + "</td>";
+            myCommentsStr = myCommentsStr + "<td>" + (new Date(comments[i].createTs)+"").replace(/[^ ]*[ ](.{17}).*/,"\$1") + "</td>";
+            myCommentsStr = myCommentsStr + "<td>" + locationStr + "</td>";
+            myCommentsStr = myCommentsStr + "</tr>";
+         }
+         myCommentsStr = myCommentsStr + "</tbody></table>";
 
-      $("#myCommentsList").html(myCommentsStr);
+         $("#myCommentsList").html(myCommentsStr);
+      }
    } else {
       alert (obj.msg);
    }
+   
 }
 
 function chkPassword(password, verifyPassword) {
@@ -308,7 +313,7 @@ function getCity (lat, long) {
       +lat+","+long+"&sensor=false";
    $.get(url).success(function(data) {
       var loc1 = data.results[0];
-      var county, city;
+      var county;
         $.each(loc1, function(k1,v1) {
            if (k1 == "address_components") {
               //alert("length: " + v1.length);
@@ -342,23 +347,36 @@ function getCity (lat, long) {
             
         });
         $('#city').html(city); 
+        getTemperature();
+
    }); 
 }
 
-function getTemperature(data) {
+function getTemperature() {
    var appStr = "";
-   if (getCookie("appid")) { appStr="&appid="+weatherurlappid; }
+   if (getCookie("appid")) { 
+      appStr="&appid="+weatherurlappid; 
+   } else {
+      if (weatherurlappid) {
+         appStr="&appid="+weatherurlappid;
+         setCookie("appid",weatherurlappid);
+      }
+   }
    var url = 
       "http://api.openweathermap.org/data/2.5/weather?q=" 
       + city + "," + country.toLowerCase() + appStr;
+   //alert ("Temp url:" + url);
    var temp;
    $.get(url).success(function(data) {
+      //alert ("In temp get!");
       var obj = data;
-      temp = obj.main.temp;
-      alert ("Temperature: " + temp);
-      var urlParams = getQueryParams();
-      weatherurlappid = urlParams('appid');
+      // conversion to degrees C
+      temp = obj.main.temp - 273.15 ; 
+      weatherurlappid = getQueryParam("appid", url);
+      //alert("appid: "+ weatherurlappid);
       setCookie("appid",weatherurlappid);
+      $('#temperature').html(temp.toString().substr(0,4) + "C"); 
+      setCookie("cookieTemp", temp.toString());
    }); 
 }
 
@@ -377,8 +395,8 @@ function getCookie(name) {
    if (parts.length == 2) return parts.pop().split(";").shift();
 }
 
-function getQueryParams() {
-   var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+function getQueryParam(name, url) {
+   var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(url);
    return results[1] || 0;
 }
 

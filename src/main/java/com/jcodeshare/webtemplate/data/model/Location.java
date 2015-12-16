@@ -44,6 +44,9 @@ public class Location {
     
     @Column(name = "latitude")
     private float latitude;
+    
+    @Column(name = "temperature")
+    private float temperature;
 
     //----------------------------------------------------------------------
     // GETTER & SETTER FOR THE KEY FIELD
@@ -82,6 +85,14 @@ public class Location {
         return this.longitude;
     } 
 
+    public void setTemperature( float temperature ) {
+        this.temperature = temperature;
+    }
+    
+    public float getTemperature() {
+        return this.temperature;
+    }
+    
     //----------------------------------------------------------------------
     // toString METHOD
     //----------------------------------------------------------------------

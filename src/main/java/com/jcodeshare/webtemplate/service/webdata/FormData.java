@@ -14,6 +14,7 @@ public class FormData {
     String city;
     String latitude;
     String longitude;
+    String temperature;
 
     public String getComment() {
         return comment;
@@ -93,6 +94,14 @@ public class FormData {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+    
+    public String getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(String temperature) {
+        this.temperature = temperature;
     }
     
     @Override

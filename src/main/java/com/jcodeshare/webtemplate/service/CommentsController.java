@@ -43,7 +43,8 @@ public class CommentsController {
             @CookieValue(value = "userCookie", defaultValue = Users.DEFAULT_USERNAME) String userCookie, 
             @CookieValue(value = "cookieCity") String cookieCity, 
             @CookieValue(value = "cookieLat") String cookieLat, 
-            @CookieValue(value = "cookieLong") String cookieLong, 
+            @CookieValue(value = "cookieLong") String cookieLong,
+            @CookieValue(value = "cookieTemp") String cookieTemp, 
             HttpServletResponse response) {
         
         Location location = null;
@@ -52,11 +53,12 @@ public class CommentsController {
             location.setCity(cookieCity);
             location.setLatitude(Float.parseFloat(cookieLat));
             location.setLongitude(Float.parseFloat(cookieLong));
+            location.setTemperature(Float.parseFloat(cookieTemp));
         }
         
-        logger.info("ADD COMMENT: " + form);
+        //logger.info("ADD COMMENT: " + form);
         Users user = usersService.findByUsername(userCookie);
-        logger.info("ADD COMMENT: " + user);
+        //logger.info("ADD COMMENT: " + user);
         Comments comments = new Comments();
         comments.setCreateDate(new Date());
         comments.setCreateTs(new Date());
@@ -66,19 +68,21 @@ public class CommentsController {
         if (location != null) { comments.setLocation(location); }  
         
         try {
-        String parentId = form.getParentId();
-        if( parentId != null && !parentId.isEmpty()) { comments.setParentId(Integer.parseInt(parentId));  };
+            String parentId = form.getParentId();
+            if (parentId != null && !parentId.isEmpty()) {
+                comments.setParentId(Integer.parseInt(parentId));
+            }
         } catch (Exception e) {
             logger.info("Did we throw exception here?");
         }
         
-        logger.info("ADD COMMENT: " + comments);
-        logger.info("ADD COMMENT LOCATION: " + comments.getLocation());
+        //logger.info("ADD COMMENT: " + comments);
+        //logger.info("ADD COMMENT LOCATION: " + comments.getLocation());
         commentsService.saveComments(comments);
         String commentId = "" + comments.getId();
         form.setCommentId(commentId);
        
-        logger.info("Calling AddComment Action: saved a comment entity: " + comments);
+        //logger.info("Calling AddComment Action: saved a comment entity: " + comments);
         
         form.setUsername(userCookie);
         form.setCommentDate(comments.getCreateTs()+"");
@@ -87,7 +91,8 @@ public class CommentsController {
             form.setCity(location.getCity());
             form.setLatitude(location.getLatitude()+"");
             form.setLongitude(location.getLongitude()+"");
-            logger.info("ADD COMMENT SETTING CITY: " + form.getCity());
+            form.setTemperature(location.getTemperature()+"");
+            //logger.info("ADD COMMENT SETTING CITY: " + form.getCity());
         }
         FormActionResult result = new FormActionResult();       
         result.setCode("200");

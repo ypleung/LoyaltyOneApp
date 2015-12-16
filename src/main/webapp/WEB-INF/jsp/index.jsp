@@ -136,7 +136,8 @@ footer {
                <p>
                   <b>CITY: </b><span id="city"></span> <b>LATITUDE:
                   </b><span id="latitude"></span> <b>LONGITUDE: </b><span
-                     id="longitude"></span>
+                     id="longitude"></span>  <b>TEMPERATURE: </b><span
+                     id="temperature"></span>
                </p>
             </div>
          </div>

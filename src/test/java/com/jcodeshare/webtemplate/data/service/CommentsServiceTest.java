@@ -63,6 +63,7 @@ public class CommentsServiceTest extends AbstractJUnit4SpringContextTests {
         location.setCity("Toronto");
         location.setLatitude(43.7667856f);
         location.setLongitude(-79.2157072f);
+        location.setTemperature(-5f);
         comments2.setLocation(location);
         
         /*
@@ -94,8 +95,8 @@ public class CommentsServiceTest extends AbstractJUnit4SpringContextTests {
             if (comment.getId() == comments1.getId()) { comment1Added = true; }
             if (comment.getId() == comments2.getId()) { comment2Added = true; }
         }
-        assertTrue("commentsService.saveUser() did not save comment1: " + comments1, comment1Added);
-        assertTrue("commentsService.saveUser() did not save comment2: " + comments2, comment2Added);
+        assertTrue("commentsService.saveComment() did not save comment1: " + comments1, comment1Added);
+        assertTrue("commentsService.saveComment() did not save comment2: " + comments2, comment2Added);
 
         /*
          * delete an comment

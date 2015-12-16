@@ -12,9 +12,10 @@ create table users (
 drop table if exists `location`;
 create table location (
   id int not null auto_increment,
-  latitude float not null,
-  longitude float not null,
-  city varchar(100),
+  latitude float,
+  longitude float,
+  city varchar(100) not null,
+  temperature float,
   primary key(`id`) using BTREE
 ) engine=InnoDB default CHARSET=utf8;
 
@@ -27,13 +28,17 @@ create table comments (
   create_date date not null,
   create_ts timestamp not null,
   location_id int,
-  foreign key(`location_id`) references location(`id`),
   foreign key(`user_id`) references users(`id`),
   primary key(`id`) using BTREE
 ) engine=InnoDB default CHARSET=utf8;
+
+ALTER TABLE comments
+  ADD CONSTRAINT fk_comments_location_id FOREIGN KEY (location_id)
+    REFERENCES location(id) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 alter table users add constraint ux_users_username
 UNIQUE (username);
 
 insert into users (username, password)
 values ('anonymous', 'password');
+
